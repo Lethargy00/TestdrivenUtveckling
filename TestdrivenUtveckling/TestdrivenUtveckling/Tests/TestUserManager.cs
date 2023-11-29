@@ -23,21 +23,18 @@ namespace TestdrivenUtveckling.Tests
             _userManager = new UserManager(_mockDatabase.Object);
         }
 
-        [TearDown] 
+        [TearDown]
         public void Teardown()
         {
-            // Clean up resources after each test if needed.
+            _mockDatabase.VerifyAll();
         }
 
         [Test]
         public void TestAddUser()
         {
             // Arrange
-            var user = new User
-            {
-                UserId = 1,
-                UserName = "Test"
-            };
+            var user = new User { UserId = 1, UserName = "TestUser" };
+            _mockDatabase.Setup(db => db.AddUser(user));
 
             // Act
             _userManager.AddUser(user);
@@ -51,6 +48,7 @@ namespace TestdrivenUtveckling.Tests
         {
             // Arrange
             var userId = 1;
+            _mockDatabase.Setup(db => db.RemoveUser(userId));
 
             // Act
             _userManager.RemoveUser(userId);
@@ -64,18 +62,17 @@ namespace TestdrivenUtveckling.Tests
         {
             // Arrange
             var userId = 1;
-            var expectedUser = new User
-            {
-                UserId = 1,
-                UserName = "Test"
-            };
-            _mockDatabase.Setup(db => db.GetUser(userId)).Returns(expectedUser);
+            var user = new User { UserId = userId, UserName = "TestUser" };
+            _mockDatabase.Setup(db => db.GetUser(userId)).Returns(user);
 
-            // Act 
+            // Act
             var result = _userManager.GetUser(userId);
 
             // Assert
-            ClassicAssert.AreEqual(expectedUser, result);
+            ClassicAssert.AreEqual(user, result);
+            _mockDatabase.Verify(db => db.GetUser(userId), Times.Once);
         }
+
+
     }
 }

@@ -29,6 +29,11 @@ public class UserManager : IDatabase
 
     public void AddUser(User user)
     {
+        if (user == null)
+        {
+            throw new ArgumentNullException(nameof(user));
+        }
+
         _database.AddUser(user);        
     }
 
