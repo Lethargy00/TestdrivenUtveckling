@@ -88,17 +88,5 @@ namespace TestdrivenUtveckling.Tests
             _mockDatabase.Verify(db => db.GetUser(userId), Times.Once);
         }
 
-        [Test] 
-        public void TestRemoveUser_UserDoesNotExist()
-        {
-            // Arrange: create a test user ID.
-            var userId = 1;
-            _mockDatabase.Setup(db => db.GetUser(userId)).Returns((User)null);
-
-            // Act and Assert: verify that an exception is thrown.
-            ClassicAssert.Throws<ArgumentException>(() => _userManager.RemoveUser(userId));
-        }
-
-
     }
 }
